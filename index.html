@@ -19,7 +19,7 @@
   <link rel="canonical" href="https://thomasorus.github.io/ranking/">
   <style>
     body {
-      font-family: sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
     }
 
     #container>*+* {
@@ -34,25 +34,53 @@
       padding: 10px;
     }
 
-    table,
-    td {
-      border: 1px solid black;
+    table {
+      border: 2px solid black;
+      border-collapse: collapse
+    }
+
+    thead {
+      background: #ccc;
+    }
+
+    thead th {
+      padding: 10px;
+      border-bottom: 1px solid black;
+    }
+
+    tr:nth-child(even) {
+      background-color: #ddd;
+    }
+
+    td,
+    th {
+      border-right: 1px solid black;
       text-align: center;
     }
 
     td {
       min-height: 100px;
-      width: 150px;
+      min-width: 150px;
       padding: 5px;
     }
 
     tr>td:first-child {
-      width: auto;
+      min-width: auto;
     }
 
     .rules,
     #menu {
       margin-bottom: 30px;
+    }
+
+    main {
+      max-width: 100ch;
+      margin: auto;
+      padding: 30px;
+    }
+
+    .table-container {
+      overflow-x: scroll;
     }
   </style>
 </head>
@@ -233,6 +261,7 @@
         menu += `<li><a href="#${ranking.date.replaceAll('.', '_')}">${ranking.date}</a></li>`
 
         let weeklyRank = `
+        <div class="table-container">
          <table><thead>
          <tr>
             <th>Rank</th>
@@ -262,13 +291,15 @@
           }
           weeklyRank += "</tr>"
         }
-        weeklyRank += "</tbody></table>"
+        weeklyRank += "</tbody></table></div>"
 
 
 
         let playerTable = `
          <details>
-             <summary>Tableau des scores</summary><table><thead>
+             <summary>Tableau des scores</summary>
+        <div class="table-container">
+        <table><thead>
          <tr>
             <th>Name</th>
             <th>Rank</th>
@@ -298,12 +329,13 @@
           playerTable += playRow
         }
 
-        playerTable += "</tbody></table></details>"
+        playerTable += "</tbody></table></div></details>"
 
 
 
         let matches = `<details>
              <summary>Tableau des matchs</summary>
+             <div class="table-container">
              <table><thead><tr>
             <th>Winner</th>
             <th>Score</th>
@@ -318,7 +350,7 @@
             <td>${res.loser}</td>
           </tr >`
         }
-        matches += `</tbody></table></details>`
+        matches += `</tbody></table></div></details>`
         r.innerHTML += date + weeklyRank + playerTable + matches + "<hr></div>"
       }
 
