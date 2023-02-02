@@ -224,8 +224,7 @@
               } else {
                 x.illegal++
               }
-            }
-            if (x.name === res.loser) {
+            } else if (x.name === res.loser) {
               if (ratio < 2 && ratio > -2) {
                 x.total++
                 x.loses++
