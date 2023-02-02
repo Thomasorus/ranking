@@ -213,11 +213,14 @@
                 x.total++
                 x.wins++
                 x.ratio = Math.round(x.wins / x.total * 100)
-                if (x.score === 2 && x.rank < 10) {
-                  x.rank++
-                  x.score = 0
-                } 
-                x.score++
+                if (x.score === 2) {
+                  if(x.rank < 10) {
+                      x.rank++
+                      x.score = 0
+                  }
+                } else {
+                   x.score++
+                }
               } else {
                 x.illegal++
               }
