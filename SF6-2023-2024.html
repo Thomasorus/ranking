@@ -137,10 +137,10 @@
                     rows.forEach(row => {
                         if (row.Winner !== "" && row.Winner !== undefined) {
                             let res = {
-                                winner: row.Winner,
+                                winner: row.Winner + " (" + row.Winner_Character + ")",
                                 winner_character: row.Winner_Character,
                                 winner_score: row.Winner_Score,
-                                loser: row.Loser,
+                                loser: row.Loser + " (" + row.Loser_Character + ")",
                                 loser_character: row.Loser_Character,
                                 loser_score: row.Loser_Score,
                             }
@@ -314,7 +314,7 @@
                         for (var z = 0; z < ranking.tableau.length; z++) {
                             let player = ranking.tableau[z]
                             if (player.rank === rank && player.score === score && player.total > 0) {
-                                content += player.name + " (" + player.character + ")<br>"
+                                content += player.name + "<br>"
                             } else {
                                 content += ""
                             }
@@ -350,7 +350,7 @@
                     let player = ranking.tableau[o]
                     let playRow = `
            <tr>
-            <td style="white-space:nowrap;">${player.name} (${player.character})</td>
+            <td style="white-space:nowrap;">${player.name}</td>
             <td>${player.rank}</td>
             <td>${player.score}</td>
             <td>${player.total}</td>
@@ -379,9 +379,9 @@
                     let res = ranking.results[h]
                     matches += `
           <tr>
-            <td>${res.winner} (${res.winner_character})</td>
+            <td>${res.winner}</td>
             <td>${res.winner_score} - ${res.loser_score}</td>
-            <td>${res.loser} (${res.loser_character})</td>
+            <td>${res.loser}</td>
           </tr >`
                 }
                 matches += `</tbody></table></div></details>`
