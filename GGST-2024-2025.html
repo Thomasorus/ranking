@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guard Impact - Guilty Gear Strive Ranking 2024/2025</title>
+
+
+    <meta name="description" content="Les résultats du ranking Smash Bros de Guard Impact, à Brest">
+    <meta property="og:title" content="Guard Impact - Smash Bros Ranking">
+    <meta property="og:description" content="Les résultats du ranking Smash Bros de Guard Impact, à Brest">
+    <meta property="og:image" content="https://thomasorus.github.io/ranking/ranking.jpg">
+    <meta property="og:image:alt" content="Logo Super Smash BZH">
+    <meta property="og:locale" content="fr_FR">
+    <meta property="og:type" content="website">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta property="og:url" content="https://thomasorus.github.io/ranking/">
+    <link rel="canonical" href="https://thomasorus.github.io/ranking/">
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+        }
+
+        #container>*+* {
+            margin-top: 60px;
+        }
+
+        #container>div>*+* {
+            margin-top: 20px;
+        }
+
+        summary {
+            padding: 10px;
+        }
+
+        table {
+            border: 2px solid black;
+            border-collapse: collapse
+        }
+
+        thead {
+            background: #ccc;
+        }
+
+        thead th {
+            padding: 10px;
+            border-bottom: 1px solid black;
+        }
+
+        tr:nth-child(even) {
+            background-color: #ddd;
+        }
+
+        td,
+        th {
+            border-right: 1px solid black;
+            text-align: center;
+        }
+
+        td {
+            min-height: 100px;
+            min-width: 150px;
+            padding: 5px;
+        }
+
+        tr>td:first-child {
+            min-width: auto;
+        }
+
+        .rules,
+        #menu {
+            margin-bottom: 30px;
+        }
+
+        main {
+            max-width: 100ch;
+            margin: auto;
+            padding: 30px;
+        }
+
+        .table-container {
+            overflow-x: scroll;
+        }
+    </style>
+</head>
+
+<body>
+    <main>
+        <img style="max-width: 100px;" src="ranking.jpg">
+
+        <h1>Guard Impact Guilty Gear Strive Ranking 2024/2025</h1>
+
+        <details class="rules">
+            <summary>Règles du ranking</summary>
+            <ul>
+                <li>Le ranking compte 10 rangs, de 1 à 10, chaque joueur commence au rang 1 avec un personnage fixe.
+                </li>
+                <li>Les joueurs peuvent se défier au format qu'ils désirent (FT3, FT5, FT10), le gagnant gagne un point
+                    et le
+                    perdant perd un point.</li>
+                <li>Quand un joueur arrive à 3 points, il monte d'un rang et repart à zéro (maximum rang 10). Quand un
+                    joueur
+                    arrive à -3 points, il descend d'un rang et retourne à zéro (minimum rang 1).</li>
+                <li>Un joueur ne peut défier que ceux directement en-dessous, au-dessus, ou au même rang que lui.</li>
+                <li>Si un joueur se retrouve seul car trop bas ou trop haut, il peut s'inscrire une seconde fois et
+                    recommencer au rang 1, mais avec un autre personnage.</li>
+                <li>Hormis son tableau des scores et ces règles, le ranking n'a pas de fiche de rencontres ou défis
+                    pré-établis.
+                    Chacun peut y aller à son rythme, via ses dispos. Aucun déclassement n'a lieu faute de présence.
+                </li>
+                <li>Un seul défi Joueur + Perso par session ! Par exemple si Thomasorus avec Félinferno et Linepik avec
+                    Wolf ont déjà fait un FT ensemble,
+                    ils ne peuvent en refaire un que si l'un des deux joueurs prend un autre personnage, ou la semaine
+                    suivante avec les même persos.
+                </li>
+            </ul>
+        </details>
+
+        <div id="menu"></div>
+        <div id="container">
+        </div>
+
+    </main>
+    <script>
+
+        const spreadsheet = '1MoazxNhwRJOvYz0zR8_a20GeO9gQa2rEQyL_zosnFzE'
+        const results = []
+        const getSheet = async (sheetId) => {
+            let totalDay = {}
+            const res = await fetch(`https://opensheet.elk.sh/${spreadsheet}/${sheetId}`)
+            if (res.ok) {
+                const rows = await res.json()
+                if (rows.length > 0) {
+                    let tempRes = []
+                    let date = rows[0].Date
+                    rows.forEach(row => {
+                        if (row.Winner !== "" && row.Winner !== undefined) {
+                            let res = {
+                                winner: row.Winner + " (" + row.Winner_Character + ")",
+                                winner_character: row.Winner_Character,
+                                winner_score: row.Winner_Score,
+                                loser: row.Loser + " (" + row.Loser_Character + ")",
+                                loser_character: row.Loser_Character,
+                                loser_score: row.Loser_Score,
+                            }
+                            tempRes.push(res)
+                        }
+                    })
+                    totalDay = {date: date, results: tempRes}
+                    results.push(totalDay)
+                    return false
+                } else {
+                    return true
+                }
+                return false
+
+            } else {
+                return true
+            }
+        }
+
+        const getData = async () => {
+            let isDone = false
+            for (var i = 4; i < 54; i++) {
+                if (!isDone) {
+                    const request = await getSheet(i)
+                    isDone = request
+                }
+            }
+
+
+            const joueurs = []
+
+            //Creating players lists
+            for (var j = 0; j < results.length; j++) {
+                let ranking = results[j]
+                for (var k = 0; k < ranking.results.length; k++) {
+                    let r = ranking.results[k]
+                    let winner = {
+                        name: r.winner,
+                        character: r.winner_character,
+                        rank: 1,
+                        score: 0,
+                        total: 0,
+                        wins: 0,
+                        loses: 0,
+                        ratio: 0,
+                        illegal: 0
+                    }
+                    let loser = {
+                        name: r.loser,
+                        character: r.loser_character,
+                        rank: 1,
+                        score: 0,
+                        total: 0,
+                        wins: 0,
+                        loses: 0,
+                        ratio: 0,
+                        illegal: 0
+                    }
+
+
+                    if (joueurs.length === 0) {
+                        joueurs.push(winner)
+                        joueurs.push(loser)
+                    } else {
+                        if (!joueurs.some(u => u.name === winner.name)) {
+                            joueurs.push(winner)
+                        }
+                        if (!joueurs.some(u => u.name === loser.name)) {
+                            joueurs.push(loser)
+                        }
+                    }
+                }
+            }
+
+            joueurs.sort(function (a, b) {
+                if (a.name < b.name) {
+                    return -1;
+                }
+                if (a.name > b.name) {
+                    return 1;
+                }
+                return 0;
+            });
+
+
+            //Scoring
+            for (var j = 0; j < results.length; j++) {
+                let ranking = results[j]
+                for (var k = 0; k < ranking.results.length; k++) {
+                    let res = ranking.results[k]
+                    for (var l = 0; l < joueurs.length; l++) {
+                        let x = joueurs[l]
+
+                        let winner = joueurs.filter(a => {
+                            return a.name === res.winner
+                        })[0]
+                        let loser = joueurs.filter(b => {
+                            return b.name === res.loser
+                        })[0]
+
+                        let ratio = winner.rank - loser.rank
+                        if (x.name === res.winner) {
+                            if (ratio < 2 && ratio > -2) {
+                                x.total++
+                                x.wins++
+                                x.ratio = Math.round(x.wins / x.total * 100)
+                                if (x.score === 2) {
+                                    if (x.rank < 10) {
+                                        x.rank++
+                                        x.score = 0
+                                    }
+                                } else {
+                                    x.score++
+                                }
+                            } else {
+                                x.illegal++
+                            }
+                        } else if (x.name === res.loser) {
+                            if (ratio < 2 && ratio > -2) {
+                                x.total++
+                                x.loses++
+                                x.ratio = Math.round(x.wins / x.total * 100)
+                                if (x.score === -2) {
+                                    if (x.rank > 1) {
+                                        x.rank--
+                                        x.score = 0
+                                    } else {
+                                        x.rank = 1
+                                        x.score = -2
+                                    }
+                                } else {
+                                    x.score--
+                                }
+                            } else {
+                                x.illegal++
+                            }
+                        }
+                    }
+                    ranking.tableau = JSON.parse(JSON.stringify(joueurs));
+                }
+            }
+
+            let r = document.querySelector('#container')
+            let men = document.querySelector('#menu')
+
+
+            let menu = "<ol>"
+
+            for (var g = 0; g < results.length; g++) {
+                let ranking = results[g]
+                let date = `<div><h2 id="${ranking.date.replaceAll('.', '_')}">${ranking.date}</h2>`
+                menu += `<li><a href="#${ranking.date.replaceAll('.', '_')}">${ranking.date}</a></li>`
+
+                let weeklyRank = `
+        <div class="table-container">
+         <table><thead>
+         <tr>
+            <th>Rank</th>
+            <th>-2</th>
+            <th>-1</th>
+            <th>0</th>
+            <th>1</th>
+            <th>2</th>
+          </tr>
+          </thead><tbody>`
+
+                for (var rank = 10; rank > 0; rank--) {
+                    weeklyRank += `<tr><td>${rank}</td>`
+                    let content = ""
+                    for (var score = -2; score < 3; score++) {
+                        for (var z = 0; z < ranking.tableau.length; z++) {
+                            let player = ranking.tableau[z]
+                            if (player.rank === rank && player.score === score && player.total > 0) {
+                                content += player.name + "<br>"
+                            } else {
+                                content += ""
+                            }
+
+                        }
+                        weeklyRank += `<td>${content}</td>`
+                        content = ""
+                    }
+                    weeklyRank += "</tr>"
+                }
+                weeklyRank += "</tbody></table></div>"
+
+
+
+                let playerTable = `
+         <details>
+             <summary>Tableau des scores</summary>
+        <div class="table-container">
+        <table><thead>
+         <tr>
+            <th>Name</th>
+            <th>Rank</th>
+            <th>Score</th>
+            <th>Total Played</th>
+            <th>Win</th>
+            <th>Lose</th>
+            <th>Victory Ratio</th>
+            <th>Illegal</th>
+          </tr>
+          </thead><tbody>`
+
+                for (var o = 0; o < ranking.tableau.length; o++) {
+                    let player = ranking.tableau[o]
+                    let playRow = `
+           <tr>
+            <td style="white-space:nowrap;">${player.name}</td>
+            <td>${player.rank}</td>
+            <td>${player.score}</td>
+            <td>${player.total}</td>
+            <td>${player.wins}</td>
+            <td>${player.loses}</td>
+            <td>${player.ratio}%</td>
+            <td>${player.illegal}</td>
+          </tr >
+          `
+                    playerTable += playRow
+                }
+
+                playerTable += "</tbody></table></div></details>"
+
+
+
+                let matches = `<details>
+             <summary>Tableau des matchs</summary>
+             <div class="table-container">
+             <table><thead><tr>
+            <th>Winner</th>
+            <th>Score</th>
+            <th>Loser</th>
+            </tr></thead><tbody>`
+                for (var h = 0; h < ranking.results.length; h++) {
+                    let res = ranking.results[h]
+                    matches += `
+          <tr>
+            <td>${res.winner}</td>
+            <td>${res.winner_score} - ${res.loser_score}</td>
+            <td>${res.loser}</td>
+          </tr >`
+                }
+                matches += `</tbody></table></div></details>`
+                r.innerHTML += date + weeklyRank + playerTable + matches + "<hr></div>"
+            }
+
+
+            men.innerHTML = menu + "</ul>"
+
+        }
+        getData()
+    </script>
+</body>
+
+</html>
